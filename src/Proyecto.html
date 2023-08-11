@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proyecto de Carga y Análisis de Imágenes</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    #upload-form {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    #results {
+      margin-top: 20px;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    ul li {
+      margin-bottom: 10px;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+    <h1>Proyecto de Carga y Análisis de Imágenes</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      <input type="file" name="image" accept="image/*">
+      <input type="submit" value="Cargar Imagen">
+    </form>
+    
+    <div id="results" style="margin-top: 20px;">
+      <h2>Resultados del Análisis:</h2>
+      <ul id="labels"></ul>
+    </div>
+  
+    <script>
+      document.querySelector('form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+  
+        const formData = new FormData();
+        formData.append('image', e.target.querySelector('input[type="file"]').files[0]);
+  
+        const response = await fetch('/upload', {
+          method: 'POST',
+          body: formData
+        });
+  
+        const data = await response.json();
+        const labelsList = document.getElementById('labels');
+  
+        labelsList.innerHTML = ''; // Limpiar la lista de etiquetas
+  
+        data.labels.forEach(label => {
+          const li = document.createElement('li');
+          li.textContent = label;
+          labelsList.appendChild(li);
+        });
+  
+        document.getElementById('results').style.display = 'block';
+      });
+    </script>
+  </body>
+</html>
